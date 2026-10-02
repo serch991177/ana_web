@@ -1,0 +1,157 @@
+<a class="skip-link" href="#contenido">Ir al contenido</a>
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a class="brand" href="#inicio" (click)="closeMenu()" aria-label="Para Ana, inicio">
+      <app-icon name="flower-2" /><span>Para Ana<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      <a href="#carta">Una cartita</a>
+      <a href="#cupones">Tus cupones</a>
+      <a href="#pequenas-cosas">Lo que te gusta</a>
+      <a href="#musica">Tu música</a>
+    </nav>
+    <span class="date-pill"><app-icon name="calendar-heart" /> 02 OCTUBRE</span>
+    <button type="button" class="menu-toggle" (click)="menuOpen.set(!menuOpen())" [attr.aria-expanded]="menuOpen()" aria-controls="mobile-nav" [attr.aria-label]="menuOpen() ? 'Cerrar menú' : 'Abrir menú'">
+      <app-icon [name]="menuOpen() ? 'x' : 'menu'" />
+    </button>
+  </div>
+  @if (menuOpen()) {
+    <nav id="mobile-nav" class="mobile-nav" aria-label="Navegación móvil">
+      <a href="#carta" (click)="closeMenu()">Una cartita</a>
+      <a href="#cupones" (click)="closeMenu()">Tus cupones</a>
+      <a href="#pequenas-cosas" (click)="closeMenu()">Lo que te gusta</a>
+      <a href="#musica" (click)="closeMenu()">Tu música</a>
+    </nav>
+  }
+</header>
+
+<main id="contenido">
+  <section id="inicio" class="hero container" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="small-line"></span> UNA LINDA CASUALIDAD</span>
+      <h1 id="hero-title">Feliz cumple,<br><em>{{ config.recipient }}.</em><span class="hero-spark" aria-hidden="true">✧</span></h1>
+      <p class="hero-subtitle">Hay personas que llegan de repente<br class="desktop-break"> y hacen más bonita la conversación.</p>
+      <p class="hero-description">Nos cruzamos por Facebook y me dieron ganas de hacerte sonreír. Este pequeño detalle es para ti y tu {{ config.dateLabel }}.</p>
+      <div class="hero-actions">
+        <button type="button" class="button button-primary" (click)="openLetter()"><app-icon name="mail" /> Abrir mi carta</button>
+        <a class="button button-outline" href="#cupones"><app-icon name="ticket" /> Ver mis cupones</a>
+      </div>
+      <div class="hero-signoff"><span class="tiny-heart"><app-icon name="heart" /></span><span>Hecho con cariño, por <strong>{{ config.sender }}</strong></span></div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-arch"><img src="assets/images/rosas-lirios.webp" width="1122" height="1402" alt="Un ramo de rosas rojas y lirios blancos, preparado con cariño para Ana" fetchpriority="high"></div>
+      <div class="flower-label"><app-icon name="flower-2" /><span>Rosas y lirios.<br><strong>Como a ti te gustan.</strong></span></div>
+      <div class="birthday-badge"><span>OCTUBRE</span><strong>02</strong><span>Tu día bonito</span><app-icon name="sparkles" /></div>
+      <span class="visual-note">un detalle solo para ti</span>
+    </div>
+  </section>
+
+  <section class="countdown-section" aria-label="Cuenta regresiva para tu cumpleaños">
+    <div class="countdown-inner container">
+      <div class="countdown-intro"><app-icon name="cake" />
+        <div>
+          <span class="eyebrow light">GUARDA ESTA FECHA</span>
+          @switch (birthdayState()) {
+            @case ('upcoming') { <h2>Tu día bonito está por llegar.</h2> }
+            @case ('birthday') { <h2>¡Hoy es tu día, Ana!</h2> }
+            @default { <h2>Los buenos deseos se quedan contigo.</h2> }
+          }
+        </div>
+      </div>
+      @if (birthdayState() === 'upcoming') {
+        <div class="countdown-numbers">
+          @for (part of countdown(); track part.label) {
+            <div class="countdown-unit"><strong>{{ part.value }}</strong><span>{{ part.label }}</span></div>
+          }
+        </div>
+      } @else {
+        <button type="button" class="button button-cream" (click)="openSurprise()"><app-icon name="party-popper" /> Celebremos un poquito</button>
+      }
+    </div>
+  </section>
+
+  <section id="carta" class="letter-section container" aria-labelledby="letter-title">
+    <div class="letter-visual" aria-hidden="true"><div class="letter-paper"><app-icon name="flower-2" /><p>Ana,</p><span>qué bonita<br>casualidad<br><em>encontrarte.</em></span><div class="paper-signature">Con cariño, {{ config.sender }}</div></div><span class="paper-seal"><app-icon name="heart" /></span></div>
+    <div class="letter-copy"><span class="eyebrow">01 / UNAS PALABRITAS</span><h2 id="letter-title">A veces, lo bonito<br>empieza con un <em>hola.</em></h2><p>Apenas estamos empezando a conocernos y ya hay algo que me gustaría: más conversaciones contigo.</p><p>No quería dejar pasar tu cumpleaños sin un detalle. Así que junté algunas de tus cosas favoritas y unas palabras que me gustaría que leyeras.</p><button type="button" class="text-button" (click)="openLetter()"><app-icon name="mail-open" /> Leer lo que escribí para ti</button></div>
+  </section>
+
+  <section id="cupones" class="coupons-section" aria-labelledby="coupons-title">
+    <div class="container">
+      <div class="section-heading"><div><span class="eyebrow">02 / MOMENTOS POR COMPARTIR</span><h2 id="coupons-title">Menos “algún día”.<br>Más <em>“vamos por un café”.</em></h2></div><p>Unos cupones para convertir una buena conversación en un plan bonito. Tú eliges el día, yo pongo la invitación.</p></div>
+      <div class="coupon-toolbar"><div class="filter-group" role="group" aria-label="Filtrar cupones">
+        @for (filter of filters; track filter.id) {
+          <button type="button" (click)="selectedCategory.set(filter.id)" [class.active]="selectedCategory() === filter.id" [attr.aria-pressed]="selectedCategory() === filter.id">{{ filter.label }}</button>
+        }
+      </div><span class="coupon-count">{{ coupons().length }} planes para sonreír</span></div>
+      <div class="coupon-grid">
+        @for (coupon of coupons(); track coupon.id) {
+          <article class="coupon-card" [class]="'coupon-card theme-' + coupon.color">
+            <div class="coupon-main"><div class="coupon-card-top"><span class="coupon-icon"><app-icon [name]="coupon.icon" /></span><span class="coupon-number">CUPÓN N.° {{ coupon.number }}</span></div><span class="coupon-venue">{{ coupon.subtitle }}</span><h3>{{ coupon.title }}</h3><p>{{ coupon.description }}</p></div>
+            <div class="coupon-bottom"><span><app-icon name="heart" /> Válido para los dos</span><button type="button" (click)="openCoupon(coupon)" [attr.aria-label]="'Abrir cupón: ' + coupon.subtitle">Quiero este plan <app-icon name="ticket" /></button></div>
+          </article>
+        }
+      </div>
+      <p class="coupon-footnote"><app-icon name="sparkles" /> Sin fecha de vencimiento, sin apuro. Son invitaciones mías para ti.</p>
+    </div>
+  </section>
+
+  <section id="pequenas-cosas" class="little-things container" aria-labelledby="things-title">
+    <div class="puppy-photo"><img src="assets/images/perrito-cafe.webp" width="1536" height="1024" alt="Un perrito de color crema esperando en una acogedora cafetería" loading="lazy"><span class="photo-caption"><app-icon name="paw-print" /> Un invitado que también te encantaría</span></div>
+    <div class="things-copy"><span class="eyebrow">03 / TUS PEQUEÑAS FELICIDADES</span><h2 id="things-title">Porque las cosas<br>que te gustan dicen<br><em>mucho de ti.</em></h2><div class="things-list"><div><app-icon name="flower-2" /><p><strong>Rosas y lirios</strong><span>Un poquito de belleza en los días simples.</span></p></div><div><app-icon name="coffee" /><p><strong>Cafecitos y conversaciones</strong><span>De esas que hacen que la tarde pase volando.</span></p></div><div><app-icon name="clapperboard" /><p><strong>Películas de terror</strong><span>Para los sustos, mejor tener compañía.</span></p></div><div><app-icon name="paw-print" /><p><strong>Perritos, siempre</strong><span>Porque con patitas todo se vuelve más bonito.</span></p></div></div></div>
+  </section>
+
+  <section id="musica" class="music-section" aria-labelledby="music-title">
+    <div class="music-inner container">
+      <div class="music-copy">
+        <span class="eyebrow"><app-icon name="headphones" /> 04 / TU MÚSICA FAVORITA</span>
+        <h2 id="music-title">Tu cumpleaños,<br>con <em>tu canción favorita.</em></h2>
+        <p>Tenía que haber un lugar para «{{ config.music.title }}» de {{ config.music.artist }}. Ponte cómoda, pon tu canción y disfruta de este pequeño detalle.</p>
+        <div class="music-dedication"><app-icon name="heart" /><span>Un cafecito, esta canción y una buena conversación contigo. Suena a un lindo plan.</span></div>
+      </div>
+      <article class="music-card" [attr.aria-label]="config.music.title + ', de ' + config.music.artist">
+        <div class="music-card-heading"><app-icon name="music-2" /><span>UN MOMENTO SOLO PARA TI</span><app-icon name="heart" /></div>
+        <div id="music-player" class="music-player">
+          @if (musicOpen()) {
+            <iframe [src]="musicEmbedUrl" [title]="'Video musical: ' + config.music.title + ' de ' + config.music.artist" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          } @else {
+            <div class="music-preview" aria-hidden="true">
+              <img src="assets/images/rosas-lirios.webp" alt="" width="1122" height="1402" loading="lazy">
+              <div class="music-cover-copy"><app-icon name="music-2" /><span>{{ config.music.title }}</span><strong>{{ config.music.artist }}</strong></div>
+            </div>
+          }
+        </div>
+        <div class="music-card-controls">
+          <button type="button" class="button button-primary" (click)="musicOpen.set(!musicOpen())" [attr.aria-expanded]="musicOpen()" aria-controls="music-player"><app-icon [name]="musicOpen() ? 'x' : 'play'" />{{ musicOpen() ? 'Cerrar reproductor' : 'Abrir reproductor' }}</button>
+          <a class="music-external-link" [href]="config.music.youtubeUrl" target="_blank" rel="noopener noreferrer" aria-label="Escuchar You de Romeo Santos en YouTube, abre en otra pestaña">Escuchar en YouTube <app-icon name="external-link" /></a>
+        </div>
+        <p class="music-note">Dale play cuando quieras. Tu canción, a tu ritmo.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="closing-section" aria-labelledby="closing-title"><div class="container closing-inner"><app-icon name="gift" /><span class="eyebrow">UN ÚLTIMO DETALLITO</span><h2 id="closing-title">Ojalá este sea el primero<br>de muchos <em>momentos bonitos.</em></h2><p>Por ahora, empecemos con una sonrisa.</p><button type="button" class="button button-primary" (click)="openSurprise()"><app-icon name="sparkles" /> Hay algo más para ti</button></div><span class="closing-star star-one" aria-hidden="true">✧</span><span class="closing-star star-two" aria-hidden="true">✧</span></section>
+</main>
+
+<footer class="site-footer container"><a class="brand" href="#inicio"><app-icon name="flower-2" /><span>Para {{ config.recipient }}.</span></a><p>Un pequeño detalle. Mucho cariño.</p><span>{{ config.dateLabel }} <span class="footer-heart">♡</span> {{ config.sender }}</span></footer>
+
+<dialog #modal class="birthday-dialog" aria-labelledby="dialog-title" (click)="onBackdropClick($event)" (close)="onDialogClosed()">
+  <button type="button" class="dialog-close" aria-label="Cerrar" (click)="closeDialog()" autofocus><app-icon name="x" /></button>
+  @if (dialogContent(); as content) {
+    @switch (content.kind) {
+      @case ('letter') {
+        <div class="letter-dialog-content"><span class="dialog-emblem"><app-icon name="mail-open" /></span><span class="eyebrow">PARA LEER CON UNA SONRISA</span><h2 id="dialog-title">Querida <em>{{ config.recipient }},</em></h2><div class="letter-body">@for (paragraph of config.letter; track $index) { <p>{{ paragraph }}</p> }</div><div class="letter-signature"><span>Con cariño,</span><strong>{{ config.sender }}</strong><app-icon name="heart" /></div><button type="button" class="button button-outline dialog-bottom-button" (click)="closeDialog()">Volver a mis sorpresas</button></div>
+      }
+      @case ('coupon') {
+        <div class="coupon-dialog-content" [class]="'coupon-dialog-content theme-' + content.coupon.color"><span class="dialog-emblem"><app-icon [name]="content.coupon.icon" /></span><span class="eyebrow">TU CUPÓN N.° {{ content.coupon.number }}</span><h2 id="dialog-title">{{ content.coupon.subtitle }}</h2><p class="dialog-lead">{{ content.coupon.detail }}</p><div class="coupon-details"><div><app-icon name="users-round" /><span>Para {{ config.recipient }} y {{ config.sender }}</span></div><div><app-icon name="calendar-heart" /><span>El día que acordemos juntos</span></div><div><app-icon name="infinity" /><span>Sin fecha de vencimiento</span></div></div><p class="coupon-note">{{ content.coupon.note }}</p><button type="button" class="button button-primary" (click)="copyCoupon(content.coupon)"><app-icon name="copy" /> Copiar mi invitación</button><span class="send-hint">Envíamela por el chat y elegimos el día.</span>@if (copyFallback()) { <div class="copy-fallback"><label for="invitation">Tu mensaje, listo para copiar:</label><textarea id="invitation" readonly rows="5" [value]="copyFallback()" (focus)="$any($event.target).select()"></textarea></div> }<p class="personal-invitation">Una invitación personal de {{ config.sender }}. No es un cupón del local.</p></div>
+      }
+      @case ('surprise') {
+        <div class="surprise-dialog-content"><span class="dialog-emblem"><app-icon name="cake" /></span><span class="eyebrow">ESTE DESEO ES PARA TI</span><h2 id="dialog-title">Pide un deseo,<br><em>{{ config.recipient }}.</em></h2><p>Que no te falten flores, abrazos, cafés ricos y razones para sonreír.</p><p>Y que siempre haya un perrito dispuesto a alegrarte el día.</p><div class="birthday-wish"><app-icon name="heart" /><span>Me alegra haberte encontrado.</span></div><button type="button" class="button button-primary" (click)="celebrate()"><app-icon name="party-popper" /> ¡Feliz cumpleaños!</button><span class="send-hint">Con cariño, {{ config.sender }}</span></div>
+      }
+    }
+  }
+  @if (toast()) { <div class="dialog-toast" role="status" aria-live="polite"><app-icon name="check" /><span>{{ toast() }}</span></div> }
+</dialog>
+
+<div class="toast" [class.visible]="toast()" role="status" aria-live="polite" aria-atomic="true">@if (toast()) { <app-icon name="check" /><span>{{ toast() }}</span> }</div>
+@if (confettiVisible()) { <div class="confetti-layer" aria-hidden="true">@for (piece of confettiPieces; track $index) { <span [style.left.%]="piece.x" [style.background]="piece.color" [style.animation-delay.s]="piece.delay" [style.animation-duration.s]="piece.duration" [style.--rotation]="piece.rotation + 'deg'"></span> }</div> }
